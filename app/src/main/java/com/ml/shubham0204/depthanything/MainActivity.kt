@@ -85,6 +85,8 @@ class MainActivity : ComponentActivity() {
                     CoroutineScope(Dispatchers.Default).launch {
                         val (depthMap, inferenceTime) = depthAnything.predict(bitmap)
                         depthImageState.value = colormapInferno(depthMap)
+//                        depthImageState.value = depthMap
+//                        depthImageState.value = rotateBitmap(colormapInferno(depthMap), 180f)
                         inferenceTimeState.longValue = inferenceTime
                         withContext(Dispatchers.Main) { progressState.value = false }
                     }
@@ -265,18 +267,18 @@ class MainActivity : ComponentActivity() {
     private fun getFixedBitmap(imageFileUri: Uri): Bitmap {
         var imageBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageFileUri))
         val exifInterface = ExifInterface(contentResolver.openInputStream(imageFileUri)!!)
-        imageBitmap =
-            when (
-                exifInterface.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_UNDEFINED
-                )
-            ) {
-                ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(imageBitmap, 90f)
-                ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(imageBitmap, 180f)
-                ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(imageBitmap, 270f)
-                else -> imageBitmap
-            }
+//        imageBitmap =
+//            when (
+//                exifInterface.getAttributeInt(
+//                    ExifInterface.TAG_ORIENTATION,
+//                    ExifInterface.ORIENTATION_UNDEFINED
+//                )
+//            ) {
+//                ExifInterface.ORIENTATION_ROTATE_90 -> rotateBitmap(imageBitmap, 90f)
+//                ExifInterface.ORIENTATION_ROTATE_180 -> rotateBitmap(imageBitmap, 180f)
+//                ExifInterface.ORIENTATION_ROTATE_270 -> rotateBitmap(imageBitmap, 270f)
+//                else -> imageBitmap
+//            }
         return imageBitmap
     }
 

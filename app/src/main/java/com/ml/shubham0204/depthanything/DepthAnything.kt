@@ -3,7 +3,6 @@ package com.ml.shubham0204.depthanything
 import ai.onnxruntime.OnnxJavaType
 import ai.onnxruntime.OnnxTensor
 import ai.onnxruntime.OrtEnvironment
-import ai.onnxruntime.OrtSession
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -61,8 +60,18 @@ class DepthAnything(context: Context, val modelName: String) {
             var depthMap = Bitmap.createBitmap(outputDim, outputDim, Bitmap.Config.ALPHA_8)
             depthMap.copyPixelsFromBuffer(outputTensor.byteBuffer)
             depthMap = Bitmap.createBitmap(depthMap, 0, 0, outputDim, outputDim, rotateTransform, false)
-            depthMap = Bitmap.createScaledBitmap(depthMap, inputImage.width, inputImage.height, true)
-            return@withContext Pair(depthMap, inferenceTime)
+//            depthMap = Bitmap.createScaledBitmap(depthMap, inputImage.width, inputImage.height, true)
+            val matrix = Matrix()
+            matrix.setScale(-1f, 1f) // 设置缩放，-1代表水平翻转，1代表垂直不变
+
+
+// 应用矩阵变换创建镜像Bitmap
+            val mirroredBitmap = Bitmap.createBitmap(
+                depthMap, 0, 0,
+                depthMap.getWidth(),
+                depthMap.getHeight(), matrix, true
+            )
+            return@withContext Pair(mirroredBitmap, inferenceTime)
         }
 
     private fun convert(bitmap: Bitmap): ByteBuffer {
